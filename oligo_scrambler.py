@@ -8,13 +8,14 @@ random.seed(18)
 
 # we're going tZo just create a list of the changed oligos and just keep adding to it
 
-test = "AAAAAAAACTGACTAGTACTAGTTACTAGTACTATCATTGATCTATCATGATC"
+test = "CAGATGCTCAACATTCCGCAGACCTCTCTGCAAGCAAAGCCCGTGGCCCCACAGGTGCCCAGCCCAGGGGGCGCCCCGGGCCAGGGTCCATACCCGTACAGCCTCTCTGAGCCAGCACCTCTCACTTTGGACACGAGCGGGAAGAATCTGACGGAGCAGAACAGCTACAGCAACATTCCTCACGAAGGGAAGCACACGCCGCTGTATGAGCGGTCCTTGCCCATCAACCCGGCCCAGAGCGGCAGCCCCAACCACGTGGATTCCGCCTACTTCCCTGGCTCTTCTACATCGTCATCTTCCGACAACGACGAGGGC"
 scrambled_list = [] # add to this list with stuff
 scramble_size = 6   # we want to scramble 6 bases
 id = []
 bp_coordinates = []
 og_seq = []
 scrambled_seq = []
+
 
 count = -1
 
@@ -44,8 +45,20 @@ output_file = pd.DataFrame()
 output_file['ID'] = id
 output_file['og seq'] = og_seq
 output_file['scrambled seq'] = scrambled_seq
-output_file['Oligo'] = scrambled_list
+
 # still need to calculate the hamming distance
+hamming = [0] * len(og_seq)
+count = 0
+for string1, string2 in zip(og_seq, scrambled_seq):
+    for char1, char2, in zip(string1, string2):
+        if (char1 != char2):
+            hamming[count] = hamming[count] + 1
+    count = count + 1
+output_file["Hamming Distance"] = hamming
+
+
+output_file['Oligo'] = scrambled_list
 output_file_path = "output_locations.csv"
 output_file.to_csv(output_file_path, index=False)
 # need id, bp scrambled, og seq segment, scrambled seq segment, and the full thing
+
