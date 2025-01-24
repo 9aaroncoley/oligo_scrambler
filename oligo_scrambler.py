@@ -52,15 +52,23 @@ output_file['scrambled seq'] = scrambled_seq
 
 # still need to calculate the hamming distance
 hamming = [0] * len(og_seq)
+at_hamming = [0] * len(og_seq)
+cg_hamming = [0] * len(og_seq)
 count = 0
 for string1, string2 in zip(og_seq, scrambled_seq):
     for char1, char2, in zip(string1, string2):
         if (char1 != char2):
             hamming[count] = hamming[count] + 1
+            
+            if (char1 == 'A' or char1 == 'T'):
+                at_hamming[count] = at_hamming[count] + 1
+            elif (char1 == 'C' or char1 == 'G'):
+                cg_hamming[count] = cg_hamming[count] + 1
     count = count + 1
 
 output_file["Hamming Distance"] = hamming
-
+output_file["A-T Bond Lost"] = at_hamming
+output_file["C-G Bond Lost"] = cg_hamming
 output_file['Oligo'] = scrambled_list
 output_file_path = "output_locations.csv"
 output_file.to_csv(output_file_path, index=False)
