@@ -11,6 +11,7 @@ random.seed(18)
 oligo = "CAGATGCTCAACATTCCGCAGACCTCTCTGCAAGCAAAGCCCGTGGCCCCACAGGTGCCCAGCCCAGGGGGCGCCCCGGGCCAGGGTCCATACCCGTACAGCCTCTCTGAGCCAGCACCTCTCACTTTGGACACGAGCGGGAAGAATCTGACGGAGCAGAACAGCTACAGCAACATTCCTCACGAAGGGAAGCACACGCCGCTGTATGAGCGGTCCTTGCCCATCAACCCGGCCCAGAGCGGCAGCCCCAACCACGTGGATTCCGCCTACTTCCCTGGCTCTTCTACATCGTCATCTTCCGACAACGACGAGGGC"
 scrambled_list = [] # add to this list with stuff
 scramble_size = 6   # we want to scramble 6 bases
+shift = 2 # how many bases we want to shift over
 id = []
 bp_coordinates = []
 og_seq = []
@@ -19,7 +20,7 @@ scrambled_seq = []
 
 count = -1
 
-for i in range(0, len(oligo) - scramble_size + 1, 2):
+for i in range(0, len(oligo) - scramble_size + 1, shift): 
     count = count + 1
     replacement = oligo[i:i+scramble_size] # has all the og letters
     og_seq.append(replacement)
@@ -29,6 +30,7 @@ for i in range(0, len(oligo) - scramble_size + 1, 2):
         temp = list(replacement) # list of characters
         random.shuffle(temp) # order is randomized 
         replacement = ''.join(temp)
+       
         # EDGE CASE - all bases are the same
 
         if (replacement != oligo[i:i+scramble_size]): # they arent equal to each other, aka we're actually doing something
@@ -40,7 +42,6 @@ for i in range(0, len(oligo) - scramble_size + 1, 2):
     scrambled_seq.append(replacement)
     scrambled_list.append(oligo[:i] + replacement + oligo[i+scramble_size:])
 
-#print(scrambled_seq)
 
 output_file = pd.DataFrame()
 
