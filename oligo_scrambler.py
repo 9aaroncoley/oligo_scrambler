@@ -3,6 +3,8 @@ import pandas as pd
 
 random.seed(18)
 
+# TO DO : MAXIMIZE HAMMING DISTANCE
+
 
 # need to scramble some oligo and shift as necessary
 
@@ -16,6 +18,7 @@ id = []
 bp_coordinates = []
 og_seq = []
 scrambled_seq = []
+hamming_collection = {}
 
 
 count = -1
@@ -23,18 +26,62 @@ count = -1
 for i in range(0, len(oligo) - scramble_size + 1, shift): 
     count = count + 1
     replacement = oligo[i:i+scramble_size] # has all the og letters
-    og_seq.append(replacement)
-    while True:
+    og_seq.append(replacement) # add the chunk to oligo sequencing list
+    og_temp = replacement # original sequence
+    while True: ## need to make it so we get the max hamming distance every time
         
         
         temp = list(replacement) # list of characters
+        counts = {"A": temp.count('A'), "C": temp.count('C'), "G": temp.count('G'), "T": temp.count('T') }
+        non_zero_counts = [count for count in counts.values() if count != 0] # properly counts the frequency of each base
+        
+        if (len(set(non_zero_counts)) == 1): # only one common length, hamming max = 6
+            max_hamming = 6
+        else:
+            max_hamming = (2 * min(non_zero_counts)) # can't find an equation, this is a good baseline
         random.shuffle(temp) # order is randomized 
         replacement = ''.join(temp)
        
         # EDGE CASE - all bases are the same
-
+        
         if (replacement != oligo[i:i+scramble_size]): # they arent equal to each other, aka we're actually doing something
-            break
+            # need max hamming
+            at_diff_count = 0
+            cg_diff_count = 0
+            current_hamming = 0
+            for string1, string2 in zip(og_temp, temp):
+                for char1, char2, in zip(string1, string2):
+                    if (char1 != char2):
+                        current_hamming = current_hamming + 1
+                        if (char1 == 'A' or char1 == 'T'):
+                            at_diff_count += 1
+                        elif (char1 == 'C' or char1 == 'G'):
+                            cg_diff_count += 1
+            if (current_hamming >= max_hamming): # if > but != 6, we wanna just try again
+                if (current_hamming == 6):
+                    break
+                else: # >= max_hamming but not 6
+                     hamming_collection.setdefault(og_temp, [])
+                     if (len(hamming_collection[og_temp]) == 50): # we tried 50 times
+                        # need to actually get a good oligo
+                        current_max_hamming = 0
+                        current_replacement = ""
+                        current_max_cg_diff = 0
+                        for value in hamming_collection[og_temp]:
+                            if (value[1] == current_max_hamming): #same hamming, check cg
+                                if (value[2] > current_max_cg_diff): # more cg differences
+                                    current_max_cg_diff = value[2]
+                                    current_max_hamming = value[1]
+                                    current_replacement = value[0]
+                            if (value[1] > current_max_hamming):
+                                current_max_cg_diff = value[2]
+                                current_max_hamming = value[1]
+                                current_replacement = value[0]
+                        replacement = current_replacement
+                        break
+                     temp_list = [replacement, current_hamming, at_diff_count, cg_diff_count]
+                     hamming_collection.setdefault(og_temp, []).append(temp_list) # add replacement and hamming to list
+                
         if (replacement[0] * scramble_size == oligo[i:i+scramble_size]): #if it's all just the same letter fr no scrambling can be done
             break
     id.append("FAM120A2P_" + str(count))
