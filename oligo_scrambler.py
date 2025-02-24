@@ -62,7 +62,7 @@ for i in range(0, len(oligo) - scramble_size + 1, shift):
                     break
                 else: # >= max_hamming but not 6
                      hamming_collection.setdefault(og_temp, [])
-                     if (len(hamming_collection[og_temp]) == 50): # we tried 50 times
+                     if (len(hamming_collection[og_temp]) == 720): # we tried 50 times
                         # need to actually get a good oligo
                         current_max_hamming = 0
                         current_replacement = ""
