@@ -19,6 +19,9 @@ bp_coordinates = []
 og_seq = []
 scrambled_seq = []
 hamming_collection = {}
+initial_base = []
+left_flanking = []
+right_flanking = []
 
 
 count = -1
@@ -88,6 +91,9 @@ for i in range(0, len(oligo) - scramble_size + 1, shift):
     bp_coordinates.append(str(i+1) + "-" + str(i+scramble_size)) 
     scrambled_seq.append(replacement)
     scrambled_list.append(oligo[:i] + replacement + oligo[i+scramble_size:])
+    initial_base.append((i+1, (i+scramble_size)))
+    left_flanking.append(oligo[:i])
+    right_flanking.append(oligo[(i+scramble_size-1):])
 
 
 output_file = pd.DataFrame()
@@ -97,6 +103,7 @@ output_file = pd.DataFrame()
 output_file['ID'] = id
 output_file['og seq'] = og_seq
 output_file['scrambled seq'] = scrambled_seq
+output_file['Base Indexes'] = initial_base
 
 # still need to calculate the hamming distance
 hamming = [0] * len(og_seq)
@@ -114,11 +121,14 @@ for string1, string2 in zip(og_seq, scrambled_seq):
                 cg_hamming[count] = cg_hamming[count] + 1
     count = count + 1
 
+output_file['Left Flanking'] = left_flanking
+output_file['Right Flanking'] = right_flanking
 output_file["Hamming Distance"] = hamming
 output_file["A-T Bond Lost"] = at_hamming
 output_file["C-G Bond Lost"] = cg_hamming
-output_file['Oligo'] = scrambled_list
-output_file_path = "output_locations.csv"
+output_file['Original Oligo'] = oligo
+output_file['New Oligo'] = scrambled_list
+output_file_path = r"C:\Users\that9\OneDrive\Documents\Programming\Xander Scrambler\oligo_scrambler\output_locations.csv"
 output_file.to_csv(output_file_path, index=False)
 # need id, bp scrambled, og seq segment, scrambled seq segment, and the full thing
 
