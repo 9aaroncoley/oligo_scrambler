@@ -65,7 +65,7 @@ for i in range(0, len(oligo) - scramble_size + 1, shift):
                     break
                 else: # >= max_hamming but not 6
                      hamming_collection.setdefault(og_temp, [])
-                     if (len(hamming_collection[og_temp]) == 720): # we tried 50 times
+                     if (len(hamming_collection[og_temp]) == 720): # we tried some times
                         # need to actually get a good oligo
                         current_max_hamming = 0
                         current_replacement = ""
@@ -128,7 +128,7 @@ output_file["A-T Bond Lost"] = at_hamming
 output_file["C-G Bond Lost"] = cg_hamming
 output_file['Original Oligo'] = oligo
 output_file['New Oligo'] = scrambled_list
-output_file_path = r"C:\Users\that9\OneDrive\Documents\Programming\Xander Scrambler\oligo_scrambler\output_locations.csv"
+output_file_path = r"C:\Users\that9\OneDrive\Documents\Programming\Xander Scrambler\brute_output_locations.csv"
 output_file.to_csv(output_file_path, index=False)
 # need id, bp scrambled, og seq segment, scrambled seq segment, and the full thing
 

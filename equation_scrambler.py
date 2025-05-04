@@ -97,7 +97,7 @@ output_file['Left Flanking'] = left_flanking
 output_file['Right Flanking'] = right_flanking
 output_file['Original Oligo'] = oligo
 output_file['New Oligo'] = scrambled_list
-output_file_path = r"C:\Users\that9\OneDrive\Documents\Programming\Xander Scrambler\output_locations.csv"
+output_file_path = r"C:\Users\that9\OneDrive\Documents\Programming\Xander Scrambler\equation_output_locations.csv"
 output_file.to_csv(output_file_path, index=False)
 
 
